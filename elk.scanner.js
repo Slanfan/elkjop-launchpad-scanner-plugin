@@ -13,7 +13,7 @@ elkjopScanner = {
 
   startBarcodeReading: () => {
     if (typeof BarcodeReaderPlugin !== 'undefined') {
-      BarcodeReaderPlugin.createReader(elk.scanner.barcodeReadingStarted, elk.scanner.barcodeReadingFailedToStart)
+      BarcodeReaderPlugin.createReader(elkjopScanner.barcodeReadingStarted, elkjopScanner.barcodeReadingFailedToStart)
     }
   },
   stopBarcodeReading: () => {
@@ -22,7 +22,7 @@ elkjopScanner = {
     }
   },
   barcodeReadingStarted: () => {
-    BarcodeReaderPlugin.addBarcodeListener(elk.scanner.barcodeReadCallback, elk.scanner.barcodeFailureCallback)
+    BarcodeReaderPlugin.addBarcodeListener(elkjopScanner.barcodeReadCallback, elkjopScanner.barcodeFailureCallback)
   },
   barcodeReadingFailedToStart: (errorMsg) => {
     // Reader most likely already created. No need to show message
@@ -38,7 +38,7 @@ elkjopScanner = {
     }
 
     // Append log entry to the log array
-    elk.scanner.log.push(logEntry)
+    elkjopScanner.log.push(logEntry)
     console.log('Scanner read:', logEntry)
 
     // Barcode was successfully scanned
@@ -51,17 +51,17 @@ elkjopScanner = {
     if (sap.n && sap.n.currentView.sViewName !== 'ZMM_MERCHMAINT') {
       return
     }
-    elk.scanner.handleReadFailure(failureTimestamp)
+    elkjopScanner.handleReadFailure(failureTimestamp)
   },
 
   setScanMode: () => {
       console.log('[scanner.setScanMode] checking if BarcodeReaderPlugin is available...')
       if (typeof BarcodeReaderPlugin !== 'undefined') {
           console.log('[scanner.setScanMode] plugin available, check scan mode...')
-          console.log(`[scanner.setScanMode] scan mode set to ${elk.scanner.config.selectedScanMode}`)
+          console.log(`[scanner.setScanMode] scan mode set to ${elkjopScanner.config.selectedScanMode}`)
 
-          if (elk.scanner.config.selectedScanMode === null || elk.scanner.config.selectedScanMode === undefined) {
-              elk.scanner.config.selectedScanMode = elk.scanner.scanMode.ONE_SHOT
+          if (elkjopScanner.config.selectedScanMode === null || elkjopScanner.config.selectedScanMode === undefined) {
+              elkjopScanner.config.selectedScanMode = elkjopScanner.scanMode.ONE_SHOT
           }
 
           // define the scan properties
@@ -80,9 +80,9 @@ elkjopScanner = {
               BarcodeReaderPlugin.PropertyString.PROPERTY_DATA_PROCESSOR_SYMBOLOGY_PREFIX, BarcodeReaderPlugin.PropertyString.DATA_PROCESSOR_SYMBOLOGY_ID_AIM,
 
               // center decode
-              BarcodeReaderPlugin.PropertyString.PROPERTY_CENTER_DECODE, elk.scanner.config.centerDecode,
+              BarcodeReaderPlugin.PropertyString.PROPERTY_CENTER_DECODE, elkjopScanner.config.centerDecode,
               // trigger mode
-              BarcodeReaderPlugin.PropertyString.PROPERTY_TRIGGER_SCAN_MODE, BarcodeReaderPlugin.PropertyString[elk.scanner.config.scanModes.find(i => i.id === elk.scanner.config.selectedScanMode).propertyString],
+              BarcodeReaderPlugin.PropertyString.PROPERTY_TRIGGER_SCAN_MODE, BarcodeReaderPlugin.PropertyString[elkjopScanner.config.scanModes.find(i => i.id === elkjopScanner.config.selectedScanMode).propertyString],
           ]
 
           console.log(`[scanner.setScanMode] scanProperties`, scanProperties)
@@ -94,16 +94,16 @@ elkjopScanner = {
               function() {
                   console.log(`[scanner.setScanMode] properties set successfully`)
                   // add to scan log
-                  logScanning('PLUGIN', `${elk.scanner.config.selectedScanMode} activated`)
+                  logScanning('PLUGIN', `${elkjopScanner.config.selectedScanMode} activated`)
 
                   // notify the user
-                  sap.m.MessageToast.show(`Scan mode changed to ${elk.scanner.config.selectedScanMode}`, {
+                  sap.m.MessageToast.show(`Scan mode changed to ${elkjopScanner.config.selectedScanMode}`, {
                       duration: 2000
                   })
 
                   // if continuous, open scan and select interface
-                  if (elk.scanner.config.selectedScanMode === elk.scanner.scanMode.CONTINUOUS) {
-                      console.log(`[scanner.setScanMode] scan mode ${elk.scanner.config.selectedScanMode}, let's open the UI for continuous scanning`)
+                  if (elkjopScanner.config.selectedScanMode === elkjopScanner.scanMode.CONTINUOUS) {
+                      console.log(`[scanner.setScanMode] scan mode ${elkjopScanner.config.selectedScanMode}, let's open the UI for continuous scanning`)
                       scanner.openContinuousInterface()
                   }
               },
