@@ -1,8 +1,4 @@
-if (!sap.elk) {
-  sap.elk = {}
-}
-
-elk.scanner = {
+elkjopScanner = {
 
   handleReadSuccess: undefined,
 
