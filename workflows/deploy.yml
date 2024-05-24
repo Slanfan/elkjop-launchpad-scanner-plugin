@@ -1,0 +1,14 @@
+name: Deploy to jsDelivr
+
+on:
+  push:
+    branches:
+      - main  # Trigger on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Purge jsDelivr cache
+      run: curl -X GET "https://purge.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin@main/*"
