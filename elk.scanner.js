@@ -33,8 +33,6 @@ elkjopScanner = {
     const logEntry = {
         timestamp: Date.now(),
         value: barcodeData,
-        page: Nav.getCurrentPage().sId,
-        refillMode: RefillMode.getSelectedKey(),
     }
 
     // Append log entry to the log array
