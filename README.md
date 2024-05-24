@@ -1,6 +1,6 @@
 # elkjop-launchpad-scanner-plugin
 
-## Copy and Paste the below code into your application in a separate script file
+Copy and Paste the below code into your application in a separate script file
 ```
 function handleReadSuccess(data) {
     // define your logic for handling barcode reads here
@@ -25,7 +25,7 @@ scannerScript.onerror = () => {
 }
 document.head.appendChild(scannerScript)
 ```
-## At the very end of you script or in the end of the last script file, add this code snippet to load the plugin
+At the very end of you script or in the end of the last script file, add this code snippet to load the plugin
 ```
 // On Honeywell devices, listen for scan when opening app
 if (sap.n) {
