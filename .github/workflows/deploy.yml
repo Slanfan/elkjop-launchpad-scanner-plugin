@@ -1,16 +1,80 @@
-name: Deploy to jsDelivr
+# name: Deploy to jsDelivr
+
+# on:
+#   push:
+#     branches:
+#       - main  # Trigger on pushes to the main branch
+
+# jobs:
+#   purge-jsdelivr-cache:
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - uses: egad13/purge-jsdelivr-cache@v1
+#         with:
+#           url: |
+#             https://cdn.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin@main/elk.scanner.js
+#             https://cdn.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin/elk.scanner.js
+name: Purge jsDelivr Cache
 
 on:
   push:
     branches:
-      - main  # Trigger on pushes to the main branch
+      - main  # Specify the branch you want to trigger this action on
 
 jobs:
-  purge-jsdelivr-cache:
-    runs-on: ubuntu-20.04
+  purge-cache:
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: egad13/purge-jsdelivr-cache@v1
-        with:
-          url: |
-            https://cdn.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin@main/elk.scanner.js
-            https://cdn.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin/elk.scanner.js
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # Specify the Node.js version you want to use
+
+    - name: Install dependencies
+      run: npm install axios
+
+    - name: Purge jsDelivr Cache
+      env:
+        REPO_PATH: slanfan/elkjop-launchpad-scanner-plugin/elk.scanner.js  # Replace with your actual path
+      run: |
+        node -e "
+        const axios = require('axios');
+        
+        const retry = async (fn, retries = 5, delay = 1000) => {
+          try {
+            return await fn();
+          } catch (error) {
+            if (retries > 0 && error.response && error.response.status === 429) {
+              console.log(\`Request was throttled. Retrying in \${delay}ms...\`);
+              await new Promise(resolve => setTimeout(resolve, delay));
+              return retry(fn, retries - 1, delay * 2); // Exponential backoff
+            } else {
+              throw error;
+            }
+          }
+        };
+        
+        const purgeCache = async (path) => {
+          const url = \`https://purge.jsdelivr.net/gh/\${path}\`;
+          try {
+            const response = await axios.get(url);
+            console.log(\`Purging request for the file "\${path}" was successful: \${response.data}\`);
+          } catch (error) {
+            if (error.response && error.response.status === 429) {
+              throw new Error(\`✖ Purging request for the file "\${path}" was throttled\`);
+            } else {
+              throw error;
+            }
+          }
+        };
+        
+        const path = process.env.REPO_PATH; // Get the path from environment variables
+
+        retry(() => purgeCache(path))
+          .then(() => console.log('File purged successfully'))
+          .catch((error) => console.error(error.message));
+        "
