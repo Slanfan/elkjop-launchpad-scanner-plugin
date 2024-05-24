@@ -12,20 +12,30 @@ elkjopScanner = {
   handleReadFailure: undefined,
 
   startBarcodeReading: () => {
+    console.log('Starting barcode reader')
     if (typeof BarcodeReaderPlugin !== 'undefined') {
       BarcodeReaderPlugin.createReader(elkjopScanner.barcodeReadingStarted, elkjopScanner.barcodeReadingFailedToStart)
     }
+    else {
+      console.error('BarcodeReaderPlugin not found')
+    }
   },
   stopBarcodeReading: () => {
+    console.log('Stopping barcode reader')
     if (typeof BarcodeReaderPlugin !== 'undefined') {
       BarcodeReaderPlugin.closeReader()
     }
+    else {
+      console.error('BarcodeReaderPlugin not found')
+    }
   },
   barcodeReadingStarted: () => {
+    console.log('Barcode reading started, adding listeners')
     BarcodeReaderPlugin.addBarcodeListener(elkjopScanner.barcodeReadCallback, elkjopScanner.barcodeFailureCallback)
   },
   barcodeReadingFailedToStart: (errorMsg) => {
     // Reader most likely already created. No need to show message
+    console.error('Barcode reading failed to start', errrorMsg)
   },
   barcodeReadCallback: (barcodeData) => {
 
