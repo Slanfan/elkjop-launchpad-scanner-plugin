@@ -1,12 +1,12 @@
 elkjopScanner = {
 
-    version: '1.0.0',
+    version: '1.0.1',
 
     timer: null,
 
     beep: {
-        error: new Audio('https://cdn.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin@main/audio/beep.error.wav'),
-        success: new Audio('https://cdn.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin@main/audio/beep.success.wav'),
+        error: new Audio('https://cdn.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin/audio/beep.error.wav'),
+        success: new Audio('https://cdn.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin/audio/beep.success.wav'),
     },
 
     handleReadSuccess: undefined,
@@ -52,7 +52,7 @@ elkjopScanner = {
         console.log('Scanner read:', logEntry)
 
         // Barcode was successfully scanned
-        handleReadSuccess(barcodeData)
+        elkjopScanner.handleReadSuccess(barcodeData)
 
     },
 
