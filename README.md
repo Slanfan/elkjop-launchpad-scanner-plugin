@@ -1,5 +1,17 @@
 # elkjop-launchpad-scanner-plugin
 
+Make sure your application has its namespace recorded in the very first script file
+```
+if (!sap.elk) {
+    sap.elk = {}
+}
+sap.elk['<INSERT-APPLICATION-NAME-HERE>'] = {
+    id: '<INSERT-APPLICATION-NAME-HERE>',
+    view: this,
+}
+const elk = sap.elk['<INSERT-APPLICATION-NAME-HERE>']
+```
+
 Copy and Paste the below code into your application in a separate script file
 ```
 function handleReadSuccess(data) {
