@@ -31,24 +31,33 @@ scannerScript.onload = () => {
     elk.scanner = elkjopScanner
     elk.scanner.handleReadSuccess = handleReadSuccess
     elk.scanner.handleReadFailure = handleReadFailure
+    
     // On Honeywell devices, listen for scan when opening app
     if (sap.n) {
         console.log('Mobile device, init barcode reader')
+        // add listener to activate scanner for this app when displayed
         sap.n.Shell.attachBeforeDisplay(() => {
             if (elk && elk.scanner) {
                 elk.scanner.stopBarcodeReading()
                 elk.scanner.startBarcodeReading()
             }
         })
+        // add listener to deactivate scanner for this app when closed
         sap.n.Shell.attachBeforeClose(() => {
             if (elk && elk.scanner) {
                 elk.scanner.stopBarcodeReading()
             }
         })
+        // activate scanner on startup
+        if (elk && elk.scanner) {
+            elk.scanner.stopBarcodeReading()
+            elk.scanner.startBarcodeReading()
+        }
     }
     else {
         console.log('Non-mobile device, skipping barcode reader initialization')
-    }    
+    }
+    
 }
 scannerScript.onerror = () => {
     console.error('Error loading script:', url)
