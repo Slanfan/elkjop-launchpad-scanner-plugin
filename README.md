@@ -1,0 +1,1 @@
+# elkjop-launchpad-scanner-plugin
