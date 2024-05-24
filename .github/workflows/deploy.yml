@@ -11,5 +11,4 @@ jobs:
     steps:
       - uses: egad13/purge-jsdelivr-cache@v1
         with:
-          url: |
-            https://cdn.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin@main/elk.scanner.js
+          url: https://cdn.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin@main/elk.scanner.js
