@@ -93,10 +93,8 @@ elkjopScanner = {
               scanProperties,
               function() {
                   console.log(`[scanner.setScanMode] properties set successfully`)
-                  // add to scan log
-                  logScanning('PLUGIN', `${elkjopScanner.config.selectedScanMode} activated`)
-
-                  // notify the user
+                  
+                // notify the user
                   sap.m.MessageToast.show(`Scan mode changed to ${elkjopScanner.config.selectedScanMode}`, {
                       duration: 2000
                   })
@@ -150,6 +148,117 @@ elkjopScanner = {
               alert(error)
           }
       );
+  },
+
+  setSingleScan: (mode) => {
+      console.log(`[scanner.setSingleScan] --> changing singleScan mode from ${elkjopScanner.config.singleScan} to ${mode}`)
+      scanner.config.singleScan = mode
+  },
+  
+  getSingleScan: () => {
+      return elkjopScanner.config.singleScan
+  },
+
+  barcodeNotification: function(type, config) {
+
+      return new Promise((resolve) => {
+
+          console.log(`[scanner.barcodeNotification] --> Method called with data:`, { type, config })
+          // create the flash element and append it to the app.
+
+          if (config === undefined) {
+              config = {
+                  showSplash: true,
+                  duration: 200,
+              }
+          }
+
+          // declare splash screen style class
+          let splashStyleClass = ''
+          let vibration = []
+
+          switch (type) {
+              case elkjopScanner.notificationType.ERROR:
+                  // vibrate the device
+                  vibration = [165, 50, 165, 50, 165, 50, 100, 35, 350]
+                  // set the flash class
+                  splashStyleClass = 'SCAN-FLASH-ERROR'
+                  // sound a beep
+                  try {
+                      elkjopScanner.beep.error.play()
+                  }
+                  catch(e) {
+                      console.log(`[scanner-barcodeNotification] --> error playing Audio`)
+                  }
+                  break
+
+              case elkjopScanner.notificationType.SUCCESS:
+                  // vibrate the device
+                  vibration = [200]
+                  // sound a beep
+                  try {
+                      elkjopScanner.beep.success.play()
+                  }
+                  catch(e) {
+                      console.log(`[scanner-barcodeNotification] --> error playing Audio`)
+                  }
+                  set the flash class
+                  splashStyleClass = 'SCAN-FLASH-SUCCESS'
+                  break
+
+              case elkjopScanner.notificationType.WARNING:
+                  // vibrate the device
+                  vibration = [200, 75, 200]
+                  // show 'warning' message toast
+                  sap.m.MessageToast.show('No barcode data read', {
+                      duration: 3000
+                  })
+                  // set the flash class
+                  splashStyleClass = 'SCAN-FLASH-WARNING'
+                  break
+
+          }
+
+
+          // show screen splash
+          if (config.showSplash ? config.showSplash : true && !elkjopScanner.continuousScanUI.isOpen()) {
+
+              const firstBodyElement = document.getElementById('body').childNodes[0]
+
+              if (firstBodyElement) {
+
+                  if (elkjopScanner.timer !== null) {
+                      clearTimeout(elkjopScanner.timer)
+                  }
+
+                  let splash = document.getElementById('elkjopScannerSplash')
+                  if (splash !== null) {
+                      splash.classList.remove('SCAN-FLASH-WARNING')
+                      splash.classList.remove('SCAN-FLASH-ERROR')
+                      splash.classList.remove('SCAN-FLASH-SUCCESS')
+                      splash.classList.add(splashStyleClass)
+                  }
+                  else {
+                      splash = document.createElement('div')
+                      splash.classList.add(splashStyleClass)
+                      splash.setAttribute('id', 'elkjopScannerSplash')
+                      document.body.insertBefore(splash, firstBodyElement)
+
+                  }
+
+                  elkjopScanner.timer = setTimeout(() => splash.parentNode.removeChild(splash), config.duration ? config.duration : 200)
+
+              }
+              else {
+                  console.log(`[scanner.barcodeNotification] --> Document body does not contain any elements, can't show splash screen!`)
+              }
+          }
+
+          // vibrate
+          navigator.vibrate(vibration)
+
+      })
+
   },
 
   log: [],
@@ -293,5 +402,42 @@ elkjopScanner = {
       },
     ],
   },
+
+  continuousScanList: new sap.m.List('continuousScanList', {
+        sticky: ['HeaderToolbar', 'InfoToolbar'],
+        selectionChange: () => {
+            if (elkjopScanner.continuousScanUI.getEndButton()) {
+                const endButton = elkjopScanner.continuousScanUI.getEndButton()
+                endButton.setEnabled(elkjopScanner.continuousScanList.getModel().oData.items.filter(i => i.selected).length > 0)
+            }
+        }
+    }),
+    continuouslyScannedItems: [],
+    continuouslyScannedItemTemplate: null,
+    continuousScanUI: new sap.m.Dialog('continuousScanUI', {
+        stretch: true,
+        title: 'Scan and Select',
+        beforeOpen: () => {
+            elkjopScanner.setBlocked(true)
+        },
+        afterClose: () => {
+            elkjopScanner.setBlocked(false)
+        },
+        beginButton: new sap.m.Button({
+            text: 'Close',
+            press: function() {
+                elkjopScanner.closeContinuousInterface()
+            }
+        }),
+    }),
+
+  setEnabled: (mode) => {
+        console.log(`[scanner.setEnabled] --> changing scanner enabled from ${elkjopScanner.config.enabled} to ${mode}`)
+        elkjopScanner.config.enabled = mode
+    },
+    setBlocked: (mode) => {
+        console.log(`[scanner.setBlocked] --> changing blocked mode from ${elkjopScanner.config.blockScanning} to ${mode}`)
+        elkjopScanner.config.blockScanning = mode
+    },
 
 }
