@@ -42,10 +42,56 @@ elkjopScanner = {
     },
     barcodeReadCallback: (barcodeData) => {
 
+        if (!elkjopScanner.config.enabled) {
+            sap.m.MessageToast.show(`Reader disabled`, {
+                duration: 4000
+            })
+            return
+        }
+
+        const barcodeContent = barcodeData.substring(3).replace(/[^ -~]+/g, '')
+        const barcodeTypeCode = barcodeData.substring(1, 2)
+        const barcodeType = elkjopScanner.barcodeTypes.find(e => e.code === barcodeTypeCode).type
+        const scanData = {
+            barcodeType,
+            barcodeTypeCode,
+            barcodeContent,
+            colorScheme: elkjopScanner.barcodeTypes.find(e => e.code === barcodeTypeCode).colorScheme,
+            selected: false,
+        }
+        console.log('[barcodeReadCallback] -->', {
+            scanData,
+            expectedBarcodeTypeCheck: elkjopScanner.config.expectedBarcodeTypeCheck,
+            expectedBarcodeTypeCodes: elkjopScanner.config.expectedBarcodeTypeCodes,
+            continuouslyScannedItems: elkjopScanner.continuouslyScannedItems,
+        })
+
+        // check if config QR Code scanned
+        if (barcodeTypeCode === elkjopScanner.barcodeTypeCode.Q && barcodeContent.substring(0,8) === 'CONFIG::') {
+            elkjopScanner.setScannerProperty(barcodeContent)
+            return
+        }
+
+        // Scanning IS blocked
+        if (elkjopScanner.config.blockScanning) {
+
+            // add to scan log
+            logScanning(barcodeType, barcodeContent, 'Error')
+
+            // show notification
+            elkjopScanner.barcodeNotification(elkjopScanner.notificationType.ERROR, {
+                duration: 1500
+            })
+
+            return
+
+        }
+
+
         // Create a log entry
         const logEntry = {
             timestamp: Date.now(),
-            value: barcodeData,
+            scanData: scanData,
         }
 
         // Append log entry to the log array
@@ -53,7 +99,7 @@ elkjopScanner = {
         console.log('Scanner read:', logEntry)
 
         // Barcode was successfully scanned
-        elkjopScanner.handleReadSuccess(barcodeData)
+        elkjopScanner.handleReadSuccess(scanData)
 
     },
 
