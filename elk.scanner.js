@@ -34,6 +34,7 @@ elkjopScanner = {
     barcodeReadingStarted: () => {
         console.log('Barcode reading started, adding listeners')
         BarcodeReaderPlugin.addBarcodeListener(elkjopScanner.barcodeReadCallback, elkjopScanner.barcodeFailureCallback)
+        elkjopScanner.setScanMode()
     },
     barcodeReadingFailedToStart: (errorMsg) => {
         // Reader most likely already created. No need to show message
