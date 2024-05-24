@@ -1,6 +1,6 @@
 elkjopScanner = {
 
-    version: '1.0.2',
+    version: '1.0.3',
 
     timer: null,
 
@@ -172,7 +172,7 @@ elkjopScanner = {
         }
     },
 
-    setScannerProperty: function (barcodeContent) {
+    setScannerProperty: function (barcodeContent, supressNotification = false) {
         if (typeof BarcodeReaderPlugin === undefined) {
             console.log('[scanner.setScannerProperty] BarcodeReaderPlugin not initialized')
             return
@@ -197,7 +197,9 @@ elkjopScanner = {
             function (event) {
                 console.log(event)
                 console.log(`[scanner.setScannerProperty] properties set successfully`)
-                sap.m.MessageToast.show(`⚙️ ${property} set to ${value}`)
+                if (!supressNotification) {
+                    sap.m.MessageToast.show(`⚙️ ${property} set to ${value}`)
+                }
             },
             function (error) {
                 console.log(`[scanner.setScannerProperty] error setting properties`)
