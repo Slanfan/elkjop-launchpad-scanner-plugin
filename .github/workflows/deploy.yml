@@ -39,7 +39,7 @@ jobs:
 
     - name: Purge jsDelivr Cache
       env:
-        REPO_PATH: slanfan/elkjop-launchpad-scanner-plugin/elk.scanner.js  # Replace with your actual path
+        REPO_PATH: slanfan/elkjop-launchpad-scanner-plugin@main/elk.scanner.js  # Replace with your actual path
       run: |
         node -e "
         const axios = require('axios');
