@@ -11,4 +11,4 @@ jobs:
 
     steps:
     - name: Purge jsDelivr cache
-      run: curl -X GET "https://purge.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin@main/*"
+      run: curl -X GET "https://purge.jsdelivr.net/gh/slanfan/elkjop-launchpad-scanner-plugin@main/elk.scanner.js"
