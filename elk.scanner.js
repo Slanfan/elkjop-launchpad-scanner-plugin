@@ -1,8 +1,8 @@
 elkjopScanner = {
 
-    version: '1.0.5',
+    version: '1.0.6',
 
-    timestamp: '2024-05-24T22:25',
+    timestamp: '2024-05-29T10:30',
 
     timer: null,
 
