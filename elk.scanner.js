@@ -130,7 +130,8 @@ elkjopScanner = {
                 BarcodeReaderPlugin.PropertyString.PROPERTY_EAN_8_CHECK_DIGIT_TRANSMIT_ENABLED, true,
                 BarcodeReaderPlugin.PropertyString.PROPERTY_UPC_A_CHECK_DIGIT_TRANSMIT_ENABLED, true,
                 BarcodeReaderPlugin.PropertyString.PROPERTY_UPC_E_CHECK_DIGIT_TRANSMIT_ENABLED, true,
-                BarcodeReaderPlugin.PropertyString.PROPERTY_QR_CODE_ENABLED, true, // --> trying to ignore QR Codes
+                BarcodeReaderPlugin.PropertyString.PROPERTY_QR_CODE_ENABLED, true,
+                BarcodeReaderPlugin.PropertyString.PROPERTY_DATA_PROCESSOR_LAUNCH_BROWSER, false, 
                 BarcodeReaderPlugin.PropertyString.PROPERTY_GS1_128_ENABLED, true,
                 BarcodeReaderPlugin.PropertyString.PROPERTY_CODE_93_ENABLED, true,
                 BarcodeReaderPlugin.PropertyString.PROPERTY_NOTIFICATION_GOOD_READ_ENABLED, true, // This should be disabled when we solve the sounds
