@@ -76,17 +76,11 @@ elkjopScanner = {
 
         // Scanning IS blocked
         if (elkjopScanner.config.blockScanning) {
-
-            // add to scan log
-            logScanning(barcodeType, barcodeContent, 'Error')
-
             // show notification
             elkjopScanner.barcodeNotification(elkjopScanner.notificationType.ERROR, {
                 duration: 1500
             })
-
             return
-
         }
 
 
